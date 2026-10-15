@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Operator helper for the root-only gates for opsle/gearbox.
+# Operator helper for the root-only gates for sneakocom/gearbox.
 #   bash ops/ci/operator-gate test        install the TEST runner
 #   bash ops/ci/operator-gate deploy      install the deploy runner
 set -Eeuo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/../.."
 
-readonly repo=opsle/gearbox
+readonly repo=sneakocom/gearbox
 
 token() { gh api -X POST "repos/$repo/actions/runners/registration-token" --jq .token; }
 online() {
