@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 2,
+  "application": "gearbox",
+  "applicationClass": "source-repository",
+  "repository": {
+    "slug": "sneakocom/gearbox",
+    "cloneUrl": "git@github.com:sneakocom/gearbox.git"
+  },
+  "hostAdmin": {
+    "services": [],
+    "database": null
+  },
+  "security": {
+    "trivy": true,
+    "renovate": true,
+    "health": null
+  }
+}
