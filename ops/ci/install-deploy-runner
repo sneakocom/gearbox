@@ -9,7 +9,7 @@ readonly home=/var/lib/gearbox-deployer
 readonly runner_dir="$home/runner"
 readonly support=/usr/local/lib/gearbox-deploy-runner
 readonly release_root=/opt/opsle-components/gearbox
-readonly repo=opsle/gearbox
+readonly repo=sneakocom/gearbox
 readonly repo_url="https://github.com/$repo"
 readonly unit=gearbox-deploy-runner.service
 readonly version=2.336.0
@@ -35,7 +35,7 @@ install -d -o root -g root -m 0755 "$support"
 cat >"$support/job-started.sh" <<'HOOK'
 #!/usr/bin/env bash
 set -Eeuo pipefail
-[[ ${GITHUB_WORKFLOW_REF:-} == "opsle/gearbox/.github/workflows/deploy.yml@refs/heads/main" ]] &&
+[[ ${GITHUB_WORKFLOW_REF:-} == "sneakocom/gearbox/.github/workflows/deploy.yml@refs/heads/main" ]] &&
   [[ ${GITHUB_EVENT_NAME:-} == workflow_run ]] || {
   echo "gearbox deploy runner refuses ${GITHUB_WORKFLOW_REF:-unknown} (${GITHUB_EVENT_NAME:-unknown})" >&2
   exit 78
