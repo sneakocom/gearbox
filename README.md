@@ -84,6 +84,11 @@ Policies bind a gear name to one kind, authorized task types, and either an
 exact deterministic argv plus executable path/hash or a helper
 transport/model/effort/session profile. The request binds the policy by SHA-256.
 
+The request shape above is illustrative. No bundled policy defines a
+`git-status` gear; the only policy shipped in this repository is
+[examples/release-policy.json](examples/release-policy.json), which defines the
+`release-fixture` gear used in the worked example below.
+
 ## CLI
 
 After reviewing and hashing a policy and request:
@@ -98,6 +103,61 @@ PYTHONPATH=src python3 -m opsle_gearbox.cli \
 Canonical result JSON is written to stdout. The concise `[Gearbox] ...`
 indicator is written to stderr. Raw stdout/stderr and helper evidence stay under
 the mode-0700 state root.
+
+### Worked example
+
+Run the CLI itself against the bundled policy. First hash the policy:
+
+```text
+sha256sum examples/release-policy.json
+```
+
+Write a request file (this example uses `/tmp/gearbox-request.json`) with the
+absolute path of this checkout in both path fields and the hash from the
+command above in `policy_sha256`:
+
+```json
+{
+  "schema": "opsle.gearbox.request.v1",
+  "task": {"argv": ["release-fixture"]},
+  "task_type": "fixture",
+  "requested_gear": "release-fixture",
+  "allowed_context": {
+    "repository": "/absolute/path/to/this/checkout",
+    "selections": [],
+    "writable_paths": []
+  },
+  "output_contract": {
+    "schema": {"type": "object", "properties": {}, "required": []}
+  },
+  "authority": {
+    "policy_path": "/absolute/path/to/this/checkout/examples/release-policy.json",
+    "policy_sha256": "<sha256-from-the-command-above>"
+  },
+  "budget": {
+    "timeout_seconds": 30,
+    "max_raw_bytes": 65536,
+    "max_return_bytes": 8192,
+    "max_context_bytes": 0,
+    "max_commands": 1,
+    "max_provider_sessions": 0
+  }
+}
+```
+
+Then run:
+
+```text
+PYTHONPATH=src python3 -m opsle_gearbox.cli \
+  --request /tmp/gearbox-request.json \
+  --state /tmp/gearbox-state \
+  --receipt /tmp/gearbox-value-receipt.json
+```
+
+Expected result: exit code 0, the same stdout result shape and the same stderr
+indicator as the demo below. For real work, keep the request, state, and
+receipt under a private directory as in the general form above; the `/tmp`
+paths here suit a disposable fixture run.
 
 For a small task pipeline, route one phase by sending a request on stdin:
 
